@@ -1,3 +1,13 @@
+⭐️⭐️使い方
+
+1.ルートで、docker compose watch実行
+2.フロントエンド: http://localhost:5173でローカルのログインページに遷移
+3.バックエンドAPIドキュメント: http://localhost:8000/docs
+
+
+
+
+
 # Full Stack FastAPI Template
 
 <a href="https://github.com/fastapi/full-stack-fastapi-template/actions?query=workflow%3ATest" target="_blank"><img src="https://github.com/fastapi/full-stack-fastapi-template/workflows/Test/badge.svg" alt="Test"></a>
