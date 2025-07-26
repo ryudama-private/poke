@@ -183,7 +183,7 @@ export class LoginService {
   ): CancelablePromise<LoginLoginAccessTokenResponse> {
     return __request(OpenAPI, {
       method: "POST",
-      url: "/api/v1/login/access-token",
+      url: "/api/v1/login/access-token",    //このurlから、login.pyの@router.post("/login/access-token")につながる
       formData: data.formData,
       mediaType: "application/x-www-form-urlencoded",
       errors: {

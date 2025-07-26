@@ -2,12 +2,25 @@
 
 1.ルートで、docker compose watch実行
 2.フロントエンド: http://localhost:5173
-でローカルのログインページに遷移
 3.バックエンドAPIドキュメント: http://localhost:8000/docs
 
 
-develop作成
-アイフルアカウントで追記
+ログイン (メールアドレス): admin@example.com
+パスワード: changethis
+
+DBへの入り方(ブラウザ)
+1.http://localhost:8080
+2.以下入力
+    システム (System): プルダウンから PostgreSQL を選択します。
+    サーバー (Server): db と入力します。（localhost ではありません。コンテナ間の通信ではサービス名を使います）
+    ユーザー名 (Username): postgres
+    パスワード (Password): changethis
+    データベース (Database): app
+
+DBへの入り方(ターミナル)
+1.ルートで
+　docker compose exec db psql -U postgres -d app
+2.SQL文で確認
 
 
 # Full Stack FastAPI Template
