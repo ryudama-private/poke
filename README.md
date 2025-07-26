@@ -1,7 +1,8 @@
 ⭐️⭐️使い方
 
 1.ルートで、docker compose watch実行
-2.フロントエンド: http://localhost:5173でローカルのログインページに遷移
+2.フロントエンド: http://localhost:5173
+でローカルのログインページに遷移
 3.バックエンドAPIドキュメント: http://localhost:8000/docs
 
 
