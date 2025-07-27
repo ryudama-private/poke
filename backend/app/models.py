@@ -115,6 +115,7 @@ class NewPassword(SQLModel):
 # BGMモデル
 # Shared properties for BGM
 class BgmBase(SQLModel):
+    album: str = Field(index=True, max_length=255)
     title: str = Field(index=True, max_length=255)
     file_path: str = Field(max_length=255)
 
