@@ -47,6 +47,9 @@ services:
     image: '${DOCKER_IMAGE_BACKEND?Variable not set}-prestart:${TAG-latest}'  ##ローカルリアタイ反映のため
     build:
       context: ./backend
+    volumes:
+      - ./backend:/app
+      - /app/.venv
     networks:
       - traefik-public
       - default
@@ -79,6 +82,13 @@ services:
   backend:
     image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
     restart: always
+    volumes:
+      - /app/.venv
+    develop:
+      watch:
+        - action: sync
+          path: ./backend
+          target: /app
     networks:
       - traefik-public
       - default
@@ -117,6 +127,7 @@ services:
 
     build:
       context: ./backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik-public
@@ -138,6 +149,13 @@ services:
   frontend:
     image: '${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG-latest}'
     restart: always
+    volumes:
+      - /app/node_modules
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: /app
     networks:
       - traefik-public
       - default
