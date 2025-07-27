@@ -4,6 +4,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 from sqlmodel import func, select
 
+from app import crud
 from app.api.deps import CurrentUser, SessionDep
 from app.models import Item, ItemCreate, ItemPublic, ItemsPublic, ItemUpdate, Message
 
@@ -61,10 +62,13 @@ def create_item(
     """
     Create new item.
     """
-    item = Item.model_validate(item_in, update={"owner_id": current_user.id})
-    session.add(item)
-    session.commit()
-    session.refresh(item)
+    # item = Item.model_validate(item_in, update={"owner_id": current_user.id})
+    # session.add(item)
+    # session.commit()
+    # session.refresh(item)
+    # return item
+
+    item = crud.create_item(session=session, item_in=item_in, owner_id=current_user.id)
     return item
 
 
