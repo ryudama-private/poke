@@ -51,6 +51,7 @@ services:
       - ./backend:/app
       - /app/.venv
       - ./data/BGM:/app/data/BGM:ro
+      - ./data/Pokemon:/app/data/Pokemon:ro
     networks:
       - traefik-public
       - default
@@ -84,8 +85,10 @@ services:
     image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
     restart: always
     volumes:
+      - ./backend:/app
       - /app/.venv
       - ./data/BGM:/app/data/BGM:ro
+      - ./data/Pokemon:/app/data/Pokemon:ro
     develop:
       watch:
         - action: sync

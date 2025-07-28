@@ -1,8 +1,9 @@
+import json
 from pathlib import Path
 from sqlmodel import Session, create_engine, select, func
 from app import crud
 from app.core.config import settings
-from app.models import User, UserCreate, Bgm
+from app.models import User, UserCreate, Bgm, Pokemon
 
 engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
 
@@ -58,3 +59,33 @@ def init_db(session: Session) -> None:
         if new_bgms:
             session.add_all(new_bgms)
             session.commit()
+
+    
+    # ポケモン図鑑の初期データをJSONファイルから読み込んで作成
+    POKEMON_JSON_PATH = Path("/app/data/Pokemon/pokemon.json")
+
+    # データベースにポケモンデータがまだ存在しないか確認
+    pokemon_count_statement = select(func.count()).select_from(Pokemon)
+    pokemon_entry_count = session.exec(pokemon_count_statement).one()
+
+    # データが存在せず、かつJSONファイルが存在する場合のみ処理を実行
+    if pokemon_entry_count == 0 and POKEMON_JSON_PATH.is_file():
+        print("Initializing Pokemon data from JSON file...")
+        
+        with open(POKEMON_JSON_PATH, "r", encoding="utf-8") as f:
+            pokemon_data_list = json.load(f)
+        
+        new_pokemons = [
+            Pokemon(
+                name=p_data.get("name"),
+                type1=p_data.get("type1"),
+                type2=p_data.get("type2"),
+                file_path=p_data.get("file_path")
+            )
+            for p_data in pokemon_data_list
+        ]
+        
+        if new_pokemons:
+            session.add_all(new_pokemons)
+            session.commit()
+            print(f"Added {len(new_pokemons)} Pokemon entries to the database.")

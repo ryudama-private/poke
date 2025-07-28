@@ -1,5 +1,6 @@
 import uuid
 
+from typing import Optional
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -131,3 +132,21 @@ class BgmPublic(BgmBase):
 class BgmsPublic(SQLModel):
     data: list[BgmPublic]
     count: int
+
+
+# Pokemonモデルのベース
+class PokemonBase(SQLModel):
+    name: str = Field(index=True, unique=True)
+    type1: str
+    type2: Optional[str] = None
+    file_path: str
+
+
+# データベースに保存されるPokemonテーブルのモデル
+class Pokemon(PokemonBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+
+
+# APIで公開するPokemonのモデル
+class PokemonPublic(PokemonBase):
+    id: uuid.UUID
