@@ -1,8 +1,8 @@
-from sqlmodel import Session, create_engine, select
-
+from pathlib import Path
+from sqlmodel import Session, create_engine, select, func
 from app import crud
 from app.core.config import settings
-from app.models import User, UserCreate
+from app.models import User, UserCreate, Bgm
 
 engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
 
@@ -31,3 +31,30 @@ def init_db(session: Session) -> None:
             is_superuser=True,
         )
         user = crud.create_user(session=session, user_create=user_in)
+
+    
+    # BGMの初期データをディレクトリ構造から読み込んで作成
+    BGM_DATA_DIRECTORY = Path("/app/data/BGM")
+
+    # データベースにBGMデータがまだ存在しないか確認
+    count_statement = select(func.count()).select_from(Bgm)
+    bgm_entry_count = session.exec(count_statement).one()
+
+    # データが存在せず、かつBGMディレクトリが存在する場合のみ処理を実行
+    if bgm_entry_count == 0 and BGM_DATA_DIRECTORY.is_dir():
+        new_bgms = []
+        for album_dir in BGM_DATA_DIRECTORY.iterdir():
+            if album_dir.is_dir():
+                # サブディレクトリ名をアルバム名とする
+                album_name = album_dir.name
+                for music_file in album_dir.iterdir():
+                    if music_file.is_file():
+                        # ファイル名から拡張子を除いた部分を曲名とする
+                        title_name = music_file.stem
+                        # ファイルのフルパスを文字列として取得
+                        file_path_str = str(music_file)
+                        new_bgms.append(Bgm(album=album_name, title=title_name, file_path=file_path_str))
+                
+        if new_bgms:
+            session.add_all(new_bgms)
+            session.commit()
