@@ -1,6 +1,7 @@
 import { Container, Heading } from "@chakra-ui/react"
 import { createFileRoute } from "@tanstack/react-router"
 
+// @ts-ignore
 export const Route = createFileRoute("/_layout/pokemons")({
   component: Pokemons,
 })
