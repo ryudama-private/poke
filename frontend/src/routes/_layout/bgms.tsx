@@ -61,45 +61,53 @@ function Bgms() {
   };
 
   return (
-    <Container maxW="full">
-      <Heading size="lg" pt={12}>
-        Bgms List
-      </Heading>
-
-      {bgms.length > 0 && (
-        <Heading size="md" pt={4} pl={10} pb={2}>
-          {bgms[0].album}
+    <>
+      <Container maxW="full">
+        <Heading size="lg" pt={12}>
+          Bgms List
         </Heading>
-      )}
 
-      <List spacing={10} pl={80} pt={2}>
-        {bgms.map((bgm, idx) => {
-          const isPlaying = currentPlaying === bgm.id;
-          return (
-            <ListItem key={idx} display="flex" alignItems="center">
-              <IconButton
-                aria-label={isPlaying ? "Stop" : "Play"}
-                onClick={() =>
-                  playAudio(
-                    `/data/BGM/PokemonRG_Music/${encodeURIComponent(bgm.title)}.wav`,
-                    bgm.id
-                  )
-                }
-                mr={2}
-                size="xs"
-                colorScheme={isPlaying ? "red" : "gray"}
-              >
-                {isPlaying ? <FaStop /> : <FaPlay />}
-              </IconButton>
+        {bgms.length > 0 && (
+          <Heading size="md" pt={4} pl={10} pb={2}>
+            {bgms[0].album}
+          </Heading>
+        )}
 
-              {bgm.title}
-            </ListItem>
-          );
-        })}
-      </List>
+        <List spacing={10} pl={80} pt={2}>
+          {bgms.map((bgm, idx) => {
+            const isPlaying = currentPlaying === bgm.id;
+            return (
+              <ListItem key={idx} display="flex" alignItems="center">
+                <IconButton
+                  aria-label={isPlaying ? "Stop" : "Play"}
+                  onClick={() =>
+                    playAudio(
+                      `/data/BGM/PokemonRG_Music/${encodeURIComponent(bgm.title)}.wav`,
+                      bgm.id
+                    )
+                  }
+                  mr={2}
+                  size="xs"
+                  colorScheme={isPlaying ? "red" : "gray"}
+                >
+                  {isPlaying ? <FaStop /> : <FaPlay />}
+                </IconButton>
+                {bgm.title}
+              </ListItem>
+            );
+          })}
+        </List>
+      </Container>
 
       {currentPlaying && (
-        <div style={{ position: "relative", height: "100%" }}>
+        <div
+          style={{
+            position: "fixed",
+            bottom: "20px",
+            left: "20px",
+            zIndex: 1000,
+          }}
+        >
           <IconButton
             aria-label="Mute toggle"
             size="xs"
@@ -110,16 +118,11 @@ function Bgms() {
                 audioRef.current.muted = !isMuted;
               }
             }}
-            style={{
-              position: "absolute",
-              bottom: "10px",
-              left: "10px",
-            }}
           >
             {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
           </IconButton>
         </div>
       )}
-    </Container>
+    </>
   );
 }
