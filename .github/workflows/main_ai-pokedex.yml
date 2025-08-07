@@ -79,4 +79,5 @@ jobs:
         with:
           app-name: "AI-pokedex"
           slot-name: "Production"
+          publish-profile: ${{ secrets.AI_POKEDEX_PUBLISH_PROFILE }}
           package: ./ # 必要に応じて dist/ や backend/ などに変更
