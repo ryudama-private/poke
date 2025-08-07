@@ -1,0 +1,20 @@
+[
+    {
+        "name": "フシギダネ",
+        "type1": "くさ",
+        "type2": "どく",
+        "file_path": "/app/data/pokemon_images/1.Bulbasaur.png"
+    },
+    {
+        "name": "フシギソウ",
+        "type1": "くさ",
+        "type2": "どく",
+        "file_path": "/app/data/pokemon_images/2.Ivysaur.png"
+    },
+    {
+        "name": "フシギバナ",
+        "type1": "くさ",
+        "type2": "どく",
+        "file_path": "/app/data/pokemon_images/3.Venusaur.png"
+    }
+]

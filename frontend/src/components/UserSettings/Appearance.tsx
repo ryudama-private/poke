@@ -14,10 +14,14 @@ const Appearance = () => {
         </Heading>
 
         <RadioGroup
-          onValueChange={(e) => setTheme(e.value)}
-          value={theme}
-          colorPalette="teal"
-        >
+          // オブジェクトから .value を取り出して setTheme に渡す
+          onValueChange={(details) => {
+            if (details.value) {
+              setTheme(details.value)
+            }
+          }}
+          value={theme || "system"}
+          >
           <Stack>
             <Radio value="system">System</Radio>
             <Radio value="light">Light Mode</Radio>

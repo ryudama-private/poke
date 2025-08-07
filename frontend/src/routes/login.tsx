@@ -48,7 +48,7 @@ function Login() {
     resetError()
 
     try {
-      await loginMutation.mutateAsync(data)
+      await loginMutation.mutateAsync(data) //mutateAsyncは結果を待つ
     } catch {
       // error is handled by useAuth hook
     }
@@ -58,7 +58,7 @@ function Login() {
     <>
       <Container
         as="form"
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(onSubmit)} // handleSubmitでチェックしてOKなら、onSubmitを実行
         h="100vh"
         maxW="sm"
         alignItems="stretch"
@@ -89,6 +89,7 @@ function Login() {
               type="email"
             />
           </InputGroup>
+          <div>admin@example.com</div>
         </Field>
         <PasswordInput
           type="password"
@@ -97,6 +98,7 @@ function Login() {
           placeholder="Password"
           errors={errors}
         />
+        <div>changethis</div>
         <RouterLink to="/recover-password" className="main-link">
           Forgot Password?
         </RouterLink>

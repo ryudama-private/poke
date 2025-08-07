@@ -1,13 +1,28 @@
-⭐️⭐️使い方
+⭐️⭐️ 使い方
 
-1.ルートで、docker compose watch実行
-2.フロントエンド: http://localhost:5173でローカルのログインページに遷移
-3.バックエンドAPIドキュメント: http://localhost:8000/docs
+1.ルートで、docker compose watch 実行 2.フロントエンド: http://localhost:5173 3.バックエンド API ドキュメント: http://localhost:8000/docs
 
+ログイン (メールアドレス): admin@example.com
+パスワード: changethis
 
-develop作成
+DB への入り方(ブラウザ)
+1.http://localhost:8080 2.以下入力
+システム (System): プルダウンから PostgreSQL を選択します。
+サーバー (Server): db と入力します。（localhost ではありません。コンテナ間の通信ではサービス名を使います）
+ユーザー名 (Username): postgres
+パスワード (Password): changethis
+データベース (Database): app
 
+DB への入り方(ターミナル) 1.ルートで
+　 docker compose exec db psql -U postgres -d app
+2.SQL 文で確認
 
+DB の抜け方(ターミナル)
+1.\q(\　はエンターのすぐ左)
+
+DB への投入方法(ターミナル) 1.ルートで
+　 docker compose exec db psql -U postgres -d app
+2.SQL 文で投入
 
 # Full Stack FastAPI Template
 
@@ -17,15 +32,15 @@ develop作成
 ## Technology Stack and Features
 
 - ⚡ [**FastAPI**](https://fastapi.tiangolo.com) for the Python backend API.
-    - 🧰 [SQLModel](https://sqlmodel.tiangolo.com) for the Python SQL database interactions (ORM).
-    - 🔍 [Pydantic](https://docs.pydantic.dev), used by FastAPI, for the data validation and settings management.
-    - 💾 [PostgreSQL](https://www.postgresql.org) as the SQL database.
+  - 🧰 [SQLModel](https://sqlmodel.tiangolo.com) for the Python SQL database interactions (ORM).
+  - 🔍 [Pydantic](https://docs.pydantic.dev), used by FastAPI, for the data validation and settings management.
+  - 💾 [PostgreSQL](https://www.postgresql.org) as the SQL database.
 - 🚀 [React](https://react.dev) for the frontend.
-    - 💃 Using TypeScript, hooks, Vite, and other parts of a modern frontend stack.
-    - 🎨 [Chakra UI](https://chakra-ui.com) for the frontend components.
-    - 🤖 An automatically generated frontend client.
-    - 🧪 [Playwright](https://playwright.dev) for End-to-End testing.
-    - 🦇 Dark mode support.
+  - 💃 Using TypeScript, hooks, Vite, and other parts of a modern frontend stack.
+  - 🎨 [Chakra UI](https://chakra-ui.com) for the frontend components.
+  - 🤖 An automatically generated frontend client.
+  - 🧪 [Playwright](https://playwright.dev) for End-to-End testing.
+  - 🦇 Dark mode support.
 - 🐋 [Docker Compose](https://www.docker.com) for development and production.
 - 🔒 Secure password hashing by default.
 - 🔑 JWT (JSON Web Token) authentication.

@@ -1,5 +1,6 @@
 import uuid
 
+from typing import Optional
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -111,3 +112,41 @@ class TokenPayload(SQLModel):
 class NewPassword(SQLModel):
     token: str
     new_password: str = Field(min_length=8, max_length=40)
+
+# BGMモデル
+# Shared properties for BGM
+class BgmBase(SQLModel):
+    album: str = Field(index=True, max_length=255)
+    title: str = Field(index=True, max_length=255)
+    file_path: str = Field(max_length=255)
+
+# Database model for BGM
+class Bgm(BgmBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+
+# Properties to return via API for a single BGM
+class BgmPublic(BgmBase):
+    id: uuid.UUID
+
+# Properties to return via API for a list of BGMs    ページネーションができた時用
+class BgmsPublic(SQLModel):
+    data: list[BgmPublic]
+    count: int
+
+
+# Pokemonモデルのベース
+class PokemonBase(SQLModel):
+    name: str = Field(index=True, unique=True)
+    type1: str
+    type2: Optional[str] = None
+    file_path: str
+
+
+# データベースに保存されるPokemonテーブルのモデル
+class Pokemon(PokemonBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+
+
+# APIで公開するPokemonのモデル
+class PokemonPublic(PokemonBase):
+    id: uuid.UUID
