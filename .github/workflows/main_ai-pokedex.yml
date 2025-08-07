@@ -19,7 +19,7 @@ jobs:
 
       - name: Install frontend dependencies
         run: npm ci
-        working-directory: frontend # frontendディレクトリの場合
+        working-directory: frontend
 
       - name: Build frontend
         run: npm run build
@@ -34,13 +34,13 @@ jobs:
       - name: Install backend dependencies
         run: |
           if [ -s requirements.txt ]; then pip install -r requirements.txt; fi
-        working-directory: backend # backendディレクトリの場合
+        working-directory: backend
 
       - name: Run backend tests
         run: |
-          if [ -f manage.py ]; then python manage.py test; fi  # Django例
-          # 他のテストコマンドに変更可能
+          if [ -f manage.py ]; then python manage.py test; fi
 
+      # アーティファクトアップロード
       - name: Upload frontend artifact
         uses: actions/upload-artifact@v4
         with:
@@ -51,7 +51,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: backend-app
-          path: backend/ # 必要に応じて修正
+          path: backend/
 
   deploy:
     runs-on: ubuntu-latest
@@ -75,7 +75,6 @@ jobs:
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_35FBA2434A3C4644B06E1F809E7DFE13 }}
 
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: "AI-pokedex"
