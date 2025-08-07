@@ -1,4 +1,4 @@
-⭐️⭐️ 使い方
+⭐️⭐️ 使い方　 python テスト
 
 1.ルートで、docker compose watch 実行 2.フロントエンド: http://localhost:5173 3.バックエンド API ドキュメント: http://localhost:8000/docs
 
