@@ -1,132 +1,48 @@
-# name: Build and Deploy to Azure App Service
-
-# on:
-#   push:
-#     branches:
-#       - main
-
-# jobs:
-#   build-and-deploy:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
-
-#       # Pythonの設定
-#       - name: Set up Python
-#         uses: actions/setup-python@v5
-#         with:
-#           python-version: "3.10"
-
-#       - name: Install Python dependencies
-#         run: |
-#           python -m pip install --upgrade pip
-#           pip install -r requirements.txt
-
-#       # Node.jsの設定
-#       - name: Set up Node.js
-#         uses: actions/setup-node@v3
-#         with:
-#           node-version: "18" # 使用するNode.jsバージョンを指定
-
-#       - name: Install Node.js dependencies
-#         run: |
-#           npm install
-
-#       # TypeScriptのビルド（Reactアプリの場合）
-#       - name: Build TypeScript
-#         run: |
-#           npm run build
-
-#       # Azure Web App へのデプロイ
-#       - name: Deploy to Azure Web App
-#         uses: azure/webapps-deploy@v3
-#         with:
-#           app-name: AI-pokedex
-#           publish-profile: ${{ secrets.AI_POKEDEX_PUBLISH_PROFILE }}
-#           package: .
-
-name: Build and deploy fullstack app to Azure Web App - AI-pokedex
+name: Build and Deploy to Azure App Service
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
+    branches:
+      - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      # フロントエンド
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Install frontend dependencies
-        run: npm ci
-        working-directory: frontend
-
-      - name: Build frontend
-        run: npm run build
-        working-directory: frontend
-
-      # バックエンド
+      # Pythonの設定
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.10"
 
-      - name: Install backend dependencies
+      - name: Install Python dependencies
         run: |
-          if [ -s requirements.txt ]; then pip install -r requirements.txt; fi
-        working-directory: backend
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Run backend tests
+      # Node.jsの設定
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18" # 使用するNode.jsバージョンを指定
+
+      - name: Install Node.js dependencies
         run: |
-          if [ -f manage.py ]; then python manage.py test; fi
+          npm install
 
-      # アーティファクトアップロード
-      - name: Upload frontend artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-app
-          path: frontend/dist/
+      # TypeScriptのビルド（Reactアプリの場合）
+      - name: Build TypeScript
+        run: |
+          npm run build
 
-      - name: Upload backend artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-app
-          path: backend/
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Download frontend artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend-app
-
-      - name: Download backend artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: backend-app
-
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_E6EB4A25D1BA47399E2B7D81362D825C }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_54F537519072490EB70E348B48EE03A0 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_35FBA2434A3C4644B06E1F809E7DFE13 }}
-
+      # Azure Web App へのデプロイ
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: "AI-pokedex"
-          slot-name: "Production"
+          app-name: AI-pokedex
           publish-profile: ${{ secrets.AI_POKEDEX_PUBLISH_PROFILE }}
-          package: ./ # 必要に応じて dist/ や backend/ などに変更
+          package: .
