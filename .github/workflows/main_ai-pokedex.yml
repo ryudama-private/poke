@@ -1,83 +1,83 @@
-name: Build and deploy fullstack app to Azure Web App - AI-pokedex
+# name: Build and deploy fullstack app to Azure Web App - AI-pokedex
 
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+# on:
+#   push:
+#     branches: [main]
+#   workflow_dispatch:
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
 
-      # フロントエンド
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
+#       # フロントエンド
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: "20"
 
-      - name: Install frontend dependencies
-        run: npm ci
-        working-directory: frontend
+#       - name: Install frontend dependencies
+#         run: npm ci
+#         working-directory: frontend
 
-      - name: Build frontend
-        run: npm run build
-        working-directory: frontend
+#       - name: Build frontend
+#         run: npm run build
+#         working-directory: frontend
 
-      # バックエンド
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+#       # バックエンド
+#       - name: Set up Python
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: "3.11"
 
-      - name: Install backend dependencies
-        run: |
-          if [ -s requirements.txt ]; then pip install -r requirements.txt; fi
-        working-directory: backend
+#       - name: Install backend dependencies
+#         run: |
+#           if [ -s requirements.txt ]; then pip install -r requirements.txt; fi
+#         working-directory: backend
 
-      - name: Run backend tests
-        run: |
-          if [ -f manage.py ]; then python manage.py test; fi
+#       - name: Run backend tests
+#         run: |
+#           if [ -f manage.py ]; then python manage.py test; fi
 
-      # アーティファクトアップロード
-      - name: Upload frontend artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-app
-          path: frontend/dist/
+#       # アーティファクトアップロード
+#       - name: Upload frontend artifact
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: frontend-app
+#           path: frontend/dist/
 
-      - name: Upload backend artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-app
-          path: backend/
+#       - name: Upload backend artifact
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: backend-app
+#           path: backend/
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Download frontend artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend-app
+#   deploy:
+#     runs-on: ubuntu-latest
+#     needs: build
+#     steps:
+#       - name: Download frontend artifact
+#         uses: actions/download-artifact@v4
+#         with:
+#           name: frontend-app
 
-      - name: Download backend artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: backend-app
+#       - name: Download backend artifact
+#         uses: actions/download-artifact@v4
+#         with:
+#           name: backend-app
 
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_E6EB4A25D1BA47399E2B7D81362D825C }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_54F537519072490EB70E348B48EE03A0 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_35FBA2434A3C4644B06E1F809E7DFE13 }}
+#       - name: Login to Azure
+#         uses: azure/login@v2
+#         with:
+#           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_E6EB4A25D1BA47399E2B7D81362D825C }}
+#           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_54F537519072490EB70E348B48EE03A0 }}
+#           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_35FBA2434A3C4644B06E1F809E7DFE13 }}
 
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: "AI-pokedex"
-          slot-name: "Production"
-          publish-profile: ${{ secrets.AI_POKEDEX_PUBLISH_PROFILE }}
-          package: ./ # 必要に応じて dist/ や backend/ などに変更
+#       - name: Deploy to Azure Web App
+#         uses: azure/webapps-deploy@v3
+#         with:
+#           app-name: "AI-pokedex"
+#           slot-name: "Production"
+#           publish-profile: ${{ secrets.AI_POKEDEX_PUBLISH_PROFILE }}
+#           package: ./ # 必要に応じて dist/ や backend/ などに変更
