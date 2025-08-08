@@ -89,7 +89,7 @@ function Login() {
               type="email"
             />
           </InputGroup>
-          <div>admin@example.com main更新できた？</div>
+          <div>admin@example.com devからマージテスト</div>
         </Field>
         <PasswordInput
           type="password"
