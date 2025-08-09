@@ -80,6 +80,10 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write # JWTトークン要求に必要
+      contents: read # コードチェックアウトに必要
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -95,12 +99,18 @@ jobs:
           # requirements.txtがルートにあるため、パスを修正
           pip install -r requirements.txt
 
+      # ここから認証ステップを追加
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_5AED7783EF4C4496B8D4448C5032112E }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_43EA1C66127E4216BDE6305091B641A5 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_95620436FA0B4CF2B909BC43D0A84DBD }}
+
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: "pokedex-back"
           slot-name: "production"
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          # デプロイするパッケージをbackendディレクトリに指定
           package: "./backend"
           startup-command: "uvicorn app.main:app --host 0.0.0.0 --port 8000"
