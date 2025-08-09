@@ -92,7 +92,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r backend/requirements.txt
+          # requirements.txtがルートにあるため、パスを修正
+          pip install -r requirements.txt
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
@@ -100,5 +101,6 @@ jobs:
           app-name: "pokedex-back"
           slot-name: "production"
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          # デプロイするパッケージをbackendディレクトリに指定
           package: "./backend"
           startup-command: "uvicorn app.main:app --host 0.0.0.0 --port 8000"
