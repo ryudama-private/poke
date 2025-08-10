@@ -17,14 +17,17 @@ from app.models import *
 # Azure Web Appのアプリケーション設定で定義した DATABASE_URL がここで読み込まれます。
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
+print(f"☆☆Using DATABASE_URL: {DATABASE_URL}")
+
 # DATABASE_URL が設定されていない場合はエラーを発生させます。
 if not DATABASE_URL:
+    print("☆☆FATAL ERROR: DATABASE_URL environment variable is not set!")
     raise ValueError("DATABASE_URL environment variable is not set")
 
 # データベースエンジンを作成します。
 # `echo=True`は、開発中に実行されるSQLをコンソールに出力してデバッグに役立ちます。
-engine = create_engine(DATABASE_URL, echo=True)
-# engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
+# engine = create_engine(DATABASE_URL, echo=True)
+engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
 
 
 # -----------------
