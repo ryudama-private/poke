@@ -24,6 +24,8 @@ DB への投入方法(ターミナル) 1.ルートで
 　 docker compose exec db psql -U postgres -d app
 2.SQL 文で投入
 
+空プッシュ
+
 # Full Stack FastAPI Template
 
 <a href="https://github.com/fastapi/full-stack-fastapi-template/actions?query=workflow%3ATest" target="_blank"><img src="https://github.com/fastapi/full-stack-fastapi-template/workflows/Test/badge.svg" alt="Test"></a>
