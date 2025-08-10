@@ -43,6 +43,7 @@ export type OpenAPIConfig = {
 export const OpenAPI: OpenAPIConfig = {
   // BASE: "",
   BASE:
+    import.meta.env.VITE_API_URL ??
     import.meta.env.VITE_API_BASE_URL ??
     "https://pokedex-back.azurewebsites.net",
   CREDENTIALS: "include",
