@@ -8,6 +8,7 @@ from typing import Generator
 
 from app.api.main import api_router
 from app.core.config import settings
+from app.models import *
 
 # -----------------
 # データベース接続設定の追加
