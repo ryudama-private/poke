@@ -22,7 +22,9 @@ if not DATABASE_URL:
 
 # データベースエンジンを作成します。
 # `echo=True`は、開発中に実行されるSQLをコンソールに出力してデバッグに役立ちます。
-engine = create_engine(DATABASE_URL, echo=True)
+# engine = create_engine(DATABASE_URL, echo=True)
+engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
+
 
 # -----------------
 # データベースセッションの依存性注入のための関数
