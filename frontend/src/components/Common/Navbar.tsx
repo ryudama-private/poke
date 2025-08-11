@@ -1,11 +1,11 @@
-import { Flex, Image, useBreakpointValue } from "@chakra-ui/react"
-import { Link } from "@tanstack/react-router"
+import { Flex, Image, Text, useBreakpointValue } from "@chakra-ui/react";
+import { Link } from "@tanstack/react-router";
 
-import Logo from "/assets/images/fastapi-logo.svg"
-import UserMenu from "./UserMenu"
+import Logo from "/assets/images/fastapi-logo.svg";
+import UserMenu from "./UserMenu";
 
 function Navbar() {
-  const display = useBreakpointValue({ base: "none", md: "flex" })
+  const display = useBreakpointValue({ base: "none", md: "flex" });
 
   return (
     <Flex
@@ -20,13 +20,25 @@ function Navbar() {
       p={4}
     >
       <Link to="/">
-        <Image src={Logo} alt="Logo" maxW="3xs" p={2} />
+        <Flex align="center">
+          <Image
+            src="/data/pokemon_images/AI_Porygon-Z.png"
+            alt="ポリゴンZ"
+            height="70px"
+            maxW="2xs"
+            alignSelf="center"
+            mb={4}
+          />
+          <Text fontSize="2xl" fontWeight="bold" ml={4} color="black">
+            ポケモンAI図鑑
+          </Text>
+        </Flex>
       </Link>
       <Flex gap={2} alignItems="center">
         <UserMenu />
       </Flex>
     </Flex>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;
