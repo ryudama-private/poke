@@ -5,6 +5,10 @@
 ログイン (メールアドレス): admin@example.com
 パスワード: changethis
 
+本番テストユーザー
+ログイン (メールアドレス): poke_dex@example.com
+パスワード: poke_dex
+
 DB への入り方(ブラウザ)
 1.http://localhost:8080 2.以下入力
 システム (System): プルダウンから PostgreSQL を選択します。
