@@ -12,7 +12,15 @@ import { routeTree } from "./routeTree.gen";
 import { ApiError, OpenAPI } from "./client";
 import { CustomProvider } from "./components/ui/provider";
 
-OpenAPI.BASE = import.meta.env.VITE_API_URL;
+// OpenAPI.BASE = import.meta.env.VITE_API_URL;
+// 環境変数が設定されている場合のみ BASE を上書き
+const apiUrl =
+  (import.meta.env.VITE_API_URL as string | undefined) ??
+  (import.meta.env.VITE_API_BASE_URL as string | undefined);
+if (apiUrl) {
+  OpenAPI.BASE = apiUrl;
+}
+
 OpenAPI.TOKEN = async () => {
   return localStorage.getItem("access_token") || "";
 };
