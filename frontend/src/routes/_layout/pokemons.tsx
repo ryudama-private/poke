@@ -56,7 +56,7 @@ function Pokemons() {
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
 
   useEffect(() => {
-    fetch("https://pokedex-back.azurewebsites.net/api/v1/pokemons")
+    fetch("https://pokedex-back.azurewebsites.net/api/v1/pokemons/")
       .then((res) => res.json())
       .then((data) => {
         setPokemons(data);

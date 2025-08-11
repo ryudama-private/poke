@@ -7,7 +7,7 @@ from app.models import BgmPublic
 router = APIRouter()
 
 
-@router.get("", response_model=list[BgmPublic])
+@router.get("/", response_model=list[BgmPublic])
 def read_bgms(
     session: SessionDep,
 ):

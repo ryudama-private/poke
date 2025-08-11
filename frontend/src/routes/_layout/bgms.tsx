@@ -23,7 +23,7 @@ function Bgms() {
   const [isMuted, setIsMuted] = useState(false);
 
   useEffect(() => {
-    fetch("https://pokedex-back.azurewebsites.net/api/v1/bgms")
+    fetch("https://pokedex-back.azurewebsites.net/api/v1/bgms/")
       .then((res) => res.json())
       .then((data) => {
         setBgms(data);

@@ -89,7 +89,6 @@ function Login() {
               type="email"
             />
           </InputGroup>
-          <div>admin@example.com devからマージテスト</div>
         </Field>
         <PasswordInput
           type="password"
@@ -98,7 +97,6 @@ function Login() {
           placeholder="Password"
           errors={errors}
         />
-        <div>changethis</div>
         <RouterLink to="/recover-password" className="main-link">
           Forgot Password?
         </RouterLink>
