@@ -17,11 +17,8 @@ from app.models import *
 # Azure Web Appのアプリケーション設定で定義した DATABASE_URL がここで読み込まれます。
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
-print(f"☆☆Using DATABASE_URL: {DATABASE_URL}")
-
 # DATABASE_URL が設定されていない場合はエラーを発生させます。
 if not DATABASE_URL:
-    print("☆☆FATAL ERROR: DATABASE_URL environment variable is not set!")
     raise ValueError("DATABASE_URL environment variable is not set")
 
 # データベースエンジンを作成します。
