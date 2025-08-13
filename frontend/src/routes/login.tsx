@@ -1,4 +1,4 @@
-import { Container, Heading, Image, Input, Text } from "@chakra-ui/react";
+import { Container, Heading, Image, Input } from "@chakra-ui/react";
 import {
   Link as RouterLink,
   createFileRoute,
