@@ -105,12 +105,12 @@ function Login() {
         <Button variant="solid" type="submit" loading={isSubmitting} size="md">
           Log In
         </Button>
-        <Text>
+        {/* <Text>
           Don't have an account?{" "}
           <RouterLink to="/signup" className="main-link">
             Sign Up
           </RouterLink>
-        </Text>
+        </Text> */}
       </Container>
     </>
   );
