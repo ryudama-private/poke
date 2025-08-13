@@ -54,7 +54,7 @@ function Bgms() {
       const nextIndex = (currentIndex + 1) % bgms.length;
       const nextBgm = bgms[nextIndex];
       playAudio(
-        `/data/BGM/PokemonRG_Music/${encodeURIComponent(nextBgm.title)}.wav`,
+        `/data/BGM/PokemonRG_Music/${encodeURIComponent(nextBgm.title)}.mp3`,
         nextBgm.id
       );
     };
@@ -82,7 +82,7 @@ function Bgms() {
                   aria-label={isPlaying ? "Stop" : "Play"}
                   onClick={() =>
                     playAudio(
-                      `/data/BGM/PokemonRG_Music/${encodeURIComponent(bgm.title)}.wav`,
+                      `/data/BGM/PokemonRG_Music/${encodeURIComponent(bgm.title)}.mp3`,
                       bgm.id
                     )
                   }
