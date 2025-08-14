@@ -21,7 +21,7 @@ function Navbar() {
       <Link to="/">
         <Flex align="center">
           <Image
-            src="/data/pokemon_images/AI_Porygon-Z.png"
+            src="https://aipokedexstorage.blob.core.windows.net/pokemon-images/AI_Porygon-Z.png"
             alt="ポリゴンZ"
             height="70px"
             maxW="2xs"
