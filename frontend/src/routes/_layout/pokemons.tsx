@@ -11,9 +11,17 @@ interface Pokemon {
   name: string;
   type1: string;
   type2?: string;
+  file_path: string;
 }
 
 function PokemonsTable({ pokemons }: { pokemons: Pokemon[] }) {
+  const resolveUrl = (p: Pokemon) =>
+    /^https?:\/\//i.test(p.file_path)
+      ? p.file_path
+      : p.file_path.startsWith("/")
+        ? p.file_path
+        : "/" + p.file_path;
+
   return (
     <Table.Root size={{ base: "sm", md: "md" }}>
       <Table.Header>
@@ -29,10 +37,13 @@ function PokemonsTable({ pokemons }: { pokemons: Pokemon[] }) {
           <Table.Row key={pokemon.id}>
             <Table.Cell>
               <img
-                src={`/data/pokemon_images/${encodeURIComponent(pokemon.name)}.png`}
+                src={resolveUrl(pokemon)}
                 alt={pokemon.name}
                 style={{ width: "48px", height: "48px", objectFit: "contain" }}
-              />
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = "/fallback.png";
+                }}
+              />{" "}
             </Table.Cell>
             <Table.Cell>{pokemon.name}</Table.Cell>
             <Table.Cell>

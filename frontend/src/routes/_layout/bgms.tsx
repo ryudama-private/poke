@@ -30,8 +30,15 @@ function Bgms() {
       });
   }, []);
 
-  const playAudio = (filePath: string, id: string) => {
-    if (currentPlaying === id) {
+  const resolveUrl = (fp: string) => {
+    // すでに http(s) ならそのまま
+    if (/^https?:\/\//i.test(fp)) return fp;
+    // 相対パスの場合（必要なら環境変数でベースURL管理）
+    return `${window.location.origin}${fp.startsWith("/") ? fp : "/" + fp}`;
+  };
+
+  const playAudio = (bgm: Bgm) => {
+    if (currentPlaying === bgm.id) {
       audioRef.current?.pause();
       audioRef.current = null;
       setCurrentPlaying(null);
@@ -43,20 +50,19 @@ function Bgms() {
       audioRef.current = null;
     }
 
-    const audio = new Audio(filePath);
+    const url = resolveUrl(bgm.file_path);
+    const audio = new Audio(url);
     audio.volume = isMuted ? 0 : volume;
     audio.play();
     audioRef.current = audio;
-    setCurrentPlaying(id);
+    setCurrentPlaying(bgm.id);
 
     audio.onended = () => {
-      const currentIndex = bgms.findIndex((bgm) => bgm.id === id);
+      const currentIndex = bgms.findIndex((b) => b.id === bgm.id);
+      if (bgms.length === 0) return;
       const nextIndex = (currentIndex + 1) % bgms.length;
       const nextBgm = bgms[nextIndex];
-      playAudio(
-        `/data/BGM/PokemonRG_Music/${encodeURIComponent(nextBgm.title)}.mp3`,
-        nextBgm.id
-      );
+      playAudio(nextBgm);
     };
   };
 
@@ -80,12 +86,7 @@ function Bgms() {
               <ListItem key={idx} display="flex" alignItems="center">
                 <IconButton
                   aria-label={isPlaying ? "Stop" : "Play"}
-                  onClick={() =>
-                    playAudio(
-                      `/data/BGM/PokemonRG_Music/${encodeURIComponent(bgm.title)}.mp3`,
-                      bgm.id
-                    )
-                  }
+                  onClick={() => playAudio(bgm)}
                   mr={2}
                   size="xs"
                   colorScheme={isPlaying ? "red" : "gray"}
