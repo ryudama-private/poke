@@ -66,7 +66,7 @@ function Login() {
         centerContent
       >
         <Image
-          src="/data/pokemon_images/AI_Metagross.png"
+          src="https://pokedexstorage.blob.core.windows.net/pokemon-images/AI_Metagross.png"
           alt="メタグロス"
           height="120px"
           maxW="2xs"
