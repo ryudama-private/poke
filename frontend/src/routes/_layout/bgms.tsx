@@ -19,7 +19,7 @@ function Bgms() {
   const [bgms, setBgms] = useState<Bgm[]>([]);
   const [currentPlaying, setCurrentPlaying] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [volume, setVolume] = useState(1);
+  const [volume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
 
   useEffect(() => {

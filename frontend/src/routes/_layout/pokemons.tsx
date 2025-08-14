@@ -1,4 +1,4 @@
-import { Container, Heading, Flex, Table, Badge } from "@chakra-ui/react";
+import { Container, Heading, Table, Badge } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 // @ts-ignore
