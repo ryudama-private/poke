@@ -9,8 +9,8 @@ import {
   FiMusic,
   FiDisc,
 } from "react-icons/fi";
+import { GiBrain } from "react-icons/gi";
 import type { IconType } from "react-icons/lib";
-
 import type { UserPublic } from "@/client";
 
 const items = [
@@ -19,6 +19,7 @@ const items = [
   // { icon: FiSettings, title: "User Settings", path: "/settings" },
   { icon: FiMusic, title: "Bgms", path: "/bgms" },
   { icon: FiDisc, title: "Pokemons", path: "/pokemons" },
+  { icon: GiBrain, title: "Synapse", path: "/chat" },
 ];
 
 interface SidebarItemsProps {
