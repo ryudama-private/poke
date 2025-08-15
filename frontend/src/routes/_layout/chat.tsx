@@ -7,9 +7,11 @@ import {
   Input,
   Text,
   VStack,
+  Image,
 } from "@chakra-ui/react";
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { GiBrain } from "react-icons/gi";
 
 // @ts-ignore
 export const Route = createFileRoute("/_layout/chat")({
@@ -43,7 +45,7 @@ function ChatPage() {
 
   const sendMessage = useCallback((text: string) => {
     const trimmed = text.trim();
-    if (!trimmed) return; // 空は無視
+    if (!trimmed) return;
     const msg: Message = {
       id: crypto.randomUUID(),
       text: trimmed,
@@ -53,7 +55,6 @@ function ChatPage() {
     setMessages((prev) => [...prev, msg]);
     setInput("");
 
-    // 簡易エコー応答
     setTimeout(() => {
       setMessages((prev) => [
         ...prev,
@@ -97,31 +98,92 @@ function ChatPage() {
         mb={4}
       >
         <VStack align="stretch">
-          {messages.map((m) => (
-            <Box
-              key={m.id}
-              maxW="80%"
-              alignSelf={m.role === "user" ? "flex-end" : "flex-start"}
-              bg={m.role === "user" ? "blue.500" : "gray.300"}
-              color={m.role === "user" ? "white" : "black"}
-              _dark={{
-                bg: m.role === "user" ? "blue.400" : "gray.600",
-                color: "white",
-              }}
-              px={3}
-              py={2}
-              borderRadius="lg"
-              boxShadow="sm"
-            >
-              <Text fontSize="sm" whiteSpace="pre-wrap">
-                {m.text}
-              </Text>
-              <Text fontSize="10px" opacity={0.6} mt={1} textAlign="right">
-                {new Date(m.ts).toLocaleTimeString()}
-              </Text>
-            </Box>
-          ))}
-        </VStack>
+          {messages.map((m) => {
+            const isUser = m.role === "user";
+            const bubbleBg = isUser ? "green.400" : "white";
+            const bubbleBgDark = isUser ? "green.500" : "gray.700";
+            const timeStr = new Date(m.ts).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+            return (
+              <HStack
+                key={m.id}
+                justify={isUser ? "flex-end" : "flex-start"}
+                align="flex-start"
+              >
+                {!isUser && (
+                  // <Image
+                  //   src="/data/pokemon_images/AI_Metagross.png"
+                  //   alt="AI"
+                  //   boxSize="32px"
+                  //   objectFit="cover"
+                  //   borderRadius="full"
+                  // />
+                  <GiBrain size="28px" />
+                )}
+
+                {isUser && (
+                  <Text
+                    fontSize="10px"
+                    color="gray.500"
+                    whiteSpace="nowrap"
+                    alignSelf="flex-end"
+                    pb="2px"
+                  >
+                    {timeStr}
+                  </Text>
+                )}
+
+                <Box
+                  maxW="80%"
+                  alignSelf="flex-start"
+                  bg={bubbleBg}
+                  color="black"
+                  _dark={{ bg: bubbleBgDark, color: "white" }}
+                  px={3}
+                  py={2}
+                  borderRadius="lg"
+                  boxShadow="sm"
+                  position="relative"
+                  _before={
+                    !isUser
+                      ? {
+                          content: '""',
+                          position: "absolute",
+                          left: "-6px",
+                          top: "14px",
+                          width: 0,
+                          height: 0,
+                          borderTop: "6px solid transparent",
+                          borderBottom: "6px solid transparent",
+                          borderRight: "6px solid",
+                          borderRightColor: bubbleBg,
+                          _dark: { borderRightColor: bubbleBgDark },
+                        }
+                      : undefined
+                  }
+                >
+                  <Text fontSize="sm" whiteSpace="pre-wrap">
+                    {m.text}
+                  </Text>
+                </Box>
+
+                {!isUser && (
+                  <Text
+                    fontSize="10px"
+                    color="gray.500"
+                    whiteSpace="nowrap"
+                    alignSelf="flex-end"
+                    pb="2px"
+                  >
+                    {timeStr}
+                  </Text>
+                )}
+              </HStack>
+            );
+          })}{" "}
+        </VStack>{" "}
       </Box>
 
       <Box as="form" onSubmit={onSubmit}>

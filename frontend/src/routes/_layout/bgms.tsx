@@ -1,5 +1,10 @@
-import { Container, Heading, IconButton } from "@chakra-ui/react";
-import { List, ListItem } from "@chakra-ui/layout";
+import {
+  Container,
+  Heading,
+  IconButton,
+  List,
+  ListItem,
+} from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, useRef } from "react";
 import { FaPlay, FaStop, FaVolumeUp, FaVolumeMute } from "react-icons/fa";
