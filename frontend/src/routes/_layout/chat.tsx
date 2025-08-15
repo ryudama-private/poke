@@ -35,6 +35,7 @@ function ChatPage() {
     },
   ]);
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const listRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -43,30 +44,65 @@ function ChatPage() {
     }
   }, [messages]);
 
-  const sendMessage = useCallback((text: string) => {
-    const trimmed = text.trim();
-    if (!trimmed) return;
-    const msg: Message = {
-      id: crypto.randomUUID(),
-      text: trimmed,
-      ts: Date.now(),
-      role: "user",
-    };
-    setMessages((prev) => [...prev, msg]);
-    setInput("");
+  const sendMessage = useCallback(
+    (text: string) => {
+      const trimmed = text.trim();
+      if (!trimmed) return;
+      const msg: Message = {
+        id: crypto.randomUUID(),
+        text: trimmed,
+        ts: Date.now(),
+        role: "user",
+      };
+      setMessages((prev) => [...prev, msg]);
+      setInput("");
+      setIsLoading(true);
 
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: crypto.randomUUID(),
-          text: `${msg.text}`,
-          ts: Date.now(),
-          role: "AI",
+      // バックエンドAPIを呼び出す
+      fetch("http://localhost:8000/api/v1/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      ]);
-    }, 400);
-  }, []);
+        body: JSON.stringify({ message: trimmed }),
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`Server responded with status ${res.status}`);
+          }
+          return res.json();
+        })
+        .then((data: { message: string }) => {
+          // AIからの返信をメッセージリストに追加
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: crypto.randomUUID(),
+              text: data.message,
+              ts: Date.now(),
+              role: "AI",
+            },
+          ]);
+        })
+        .catch((err) => {
+          // エラーメッセージをチャットに表示
+          console.error(err);
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: crypto.randomUUID(),
+              text: "Sorry, an error occurred. Please try again.",
+              ts: Date.now(),
+              role: "AI",
+            },
+          ]);
+        })
+        .finally(() => {
+          setIsLoading(false); // ローディング終了
+        });
+    },
+    [input]
+  );
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -112,16 +148,7 @@ function ChatPage() {
                 justify={isUser ? "flex-end" : "flex-start"}
                 align="flex-start"
               >
-                {!isUser && (
-                  // <Image
-                  //   src="/data/pokemon_images/AI_Metagross.png"
-                  //   alt="AI"
-                  //   boxSize="32px"
-                  //   objectFit="cover"
-                  //   borderRadius="full"
-                  // />
-                  <GiBrain size="28px" />
-                )}
+                {!isUser && <GiBrain size="28px" />}
 
                 {isUser && (
                   <Text
@@ -194,6 +221,7 @@ function ChatPage() {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={onKeyDown}
             autoFocus
+            disabled={isLoading}
           />
           <Button type="submit" colorScheme="blue">
             Send
