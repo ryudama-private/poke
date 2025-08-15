@@ -1,13 +1,8 @@
-import {
-  Container,
-  Heading,
-  IconButton,
-  List,
-  ListItem,
-} from "@chakra-ui/react";
+import { Container, Heading, IconButton, Box } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, useRef } from "react";
 import { FaPlay, FaStop, FaVolumeUp, FaVolumeMute } from "react-icons/fa";
+
 // @ts-ignore
 export const Route = createFileRoute("/_layout/bgms")({
   component: Bgms,
@@ -36,6 +31,7 @@ function Bgms() {
   }, []);
 
   const playAudio = (filePath: string, id: string) => {
+    // 同じ曲なら停止
     if (currentPlaying === id) {
       audioRef.current?.pause();
       audioRef.current = null;
@@ -43,6 +39,7 @@ function Bgms() {
       return;
     }
 
+    // 別曲再生前に既存停止
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current = null;
@@ -78,11 +75,25 @@ function Bgms() {
           </Heading>
         )}
 
-        <List spacing={10} pl={80} pt={2}>
-          {bgms.map((bgm, idx) => {
+        <Box
+          as="ul"
+          pl={59}
+          pt={2}
+          display="grid"
+          rowGap={3}
+          listStyleType="none"
+          m={0}
+        >
+          {bgms.map((bgm) => {
             const isPlaying = currentPlaying === bgm.id;
             return (
-              <ListItem key={idx} display="flex" alignItems="center">
+              <Box
+                as="li"
+                key={bgm.id}
+                display="flex"
+                alignItems="center"
+                fontSize="sm"
+              >
                 <IconButton
                   aria-label={isPlaying ? "Stop" : "Play"}
                   onClick={() =>
@@ -95,23 +106,29 @@ function Bgms() {
                   size="xs"
                   colorScheme={isPlaying ? "red" : "gray"}
                 >
-                  {isPlaying ? <FaStop /> : <FaPlay />}
+                  <Box as="span">{isPlaying ? <FaStop /> : <FaPlay />}</Box>
                 </IconButton>
                 {bgm.title}
-              </ListItem>
+              </Box>
             );
           })}
-        </List>
+        </Box>
       </Container>
 
       {currentPlaying && (
-        <div
-          style={{
-            position: "fixed",
-            bottom: "20px",
-            left: "20px",
-            zIndex: 1000,
-          }}
+        <Box
+          position="fixed"
+          bottom="20px"
+          left="20px"
+          zIndex={1000}
+          display="flex"
+          gap={2}
+          alignItems="center"
+          bg="white"
+          _dark={{ bg: "gray.700" }}
+          p={2}
+          borderRadius="md"
+          boxShadow="md"
         >
           <IconButton
             aria-label="Mute toggle"
@@ -124,9 +141,9 @@ function Bgms() {
               }
             }}
           >
-            {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
+            <Box as="span">{isMuted ? <FaVolumeMute /> : <FaVolumeUp />}</Box>
           </IconButton>
-        </div>
+        </Box>
       )}
     </>
   );
