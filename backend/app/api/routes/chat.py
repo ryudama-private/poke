@@ -12,7 +12,7 @@ class ChatRequest(BaseModel):
     message: str
 
 
-@router.post("", response_model=Message)
+@router.post("/", response_model=Message)
 def handle_chat(chat_request: ChatRequest):
     """
     ユーザーからのメッセージを受け取り、OpenAI APIからの応答を返す
