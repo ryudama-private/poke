@@ -10,7 +10,7 @@ api_router.include_router(utils.router)
 api_router.include_router(items.router)
 api_router.include_router(bgm.router, prefix="/bgms", tags=["bgms"])
 api_router.include_router(pokemon.router, prefix="/pokemons", tags=["pokemons"])
-api_router.include_router(chat.router, prefix="/chat", tags=["chat"])
+# api_router.include_router(chat.router, prefix="/chat", tags=["chat"])
 
 
 if settings.ENVIRONMENT == "local":
