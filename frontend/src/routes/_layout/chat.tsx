@@ -59,7 +59,7 @@ function ChatPage() {
       setIsLoading(true);
 
       // バックエンドAPIを呼び出す
-      fetch("https://pokedex-back.azurewebsites.net/v1/chat/", {
+      fetch("https://pokedex-back.azurewebsites.net/api/v1/chat/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
