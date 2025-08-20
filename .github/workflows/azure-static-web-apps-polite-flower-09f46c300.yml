@@ -77,32 +77,12 @@ jobs:
       id-token: write
       contents: read
     steps:
-      # 1. ソースコードのチェックアウト
       - uses: actions/checkout@v3
         with:
           submodules: true
           lfs: false
-
-      # 2. Node.js 環境のセットアップ
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
-
-      # 3. 依存関係のインストール
-      - name: Install dependencies
-        run: npm ci
-        working-directory: ./frontend
-
-      # 4. フロントエンドビルド
-      - name: Build frontend
-        run: npm run build
-        working-directory: ./frontend
-
-      # 5. GitHub ID トークン取得
       - name: Install OIDC Client from Core Package
         run: npm install @actions/core@1.6.0 @actions/http-client
-
       - name: Get Id Token
         uses: actions/github-script@v6
         id: idtoken
@@ -111,18 +91,19 @@ jobs:
             const coredemo = require('@actions/core')
             return await coredemo.getIDToken()
           result-encoding: string
-
-      # 6. Azure Static Web Apps にデプロイ
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_FLOWER_09F46C300 }}
           action: "upload"
-          app_location: "./frontend"
-          api_location: "" # バックエンドは別の App Service なので空
-          output_location: "frontend/dist" # npm run build で生成されるディレクトリ
+          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
+          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
+          app_location: "./frontend" # App source code path
+          api_location: "" # Api source code path - optional
+          output_location: "dist" # Built app content directory - optional
           github_id_token: ${{ steps.idtoken.outputs.result }}
+          ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
