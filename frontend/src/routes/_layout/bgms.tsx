@@ -8,6 +8,9 @@ export const Route = createFileRoute("/_layout/bgms")({
   component: Bgms,
 });
 
+let globalAudioRef: HTMLAudioElement | null = null;
+let globalCurrentPlaying: string | null = null;
+
 interface Bgm {
   album: string;
   title: string;
@@ -30,31 +33,37 @@ function Bgms() {
       });
   }, []);
 
+  // ページ表示時にグローバル値で状態を復元
+  useEffect(() => {
+    setCurrentPlaying(globalCurrentPlaying);
+  }, []);
+
   const playAudio = (filePath: string, id: string) => {
     // 同じ曲なら停止
     if (currentPlaying === id) {
-      audioRef.current?.pause();
-      audioRef.current = null;
+      globalAudioRef?.pause();
+      globalAudioRef = null;
+      globalCurrentPlaying = null; // グローバルも更新
       setCurrentPlaying(null);
       return;
     }
-
     // 別曲再生前に既存停止
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
+    if (globalAudioRef) {
+      globalAudioRef.pause();
+      globalAudioRef = null;
     }
-
     const audio = new Audio(filePath);
-    audio.volume = isMuted ? 0 : volume;
     audio.play();
-    audioRef.current = audio;
+    globalAudioRef = audio;
+    globalCurrentPlaying = id; // グローバルも更新
     setCurrentPlaying(id);
 
     audio.onended = () => {
       const currentIndex = bgms.findIndex((bgm) => bgm.id === id);
       const nextIndex = (currentIndex + 1) % bgms.length;
       const nextBgm = bgms[nextIndex];
+      globalCurrentPlaying = nextBgm.id; // グローバルも更新
+      setCurrentPlaying(nextBgm.id); // UIも更新
       playAudio(
         `/data/BGM/PokemonRG_Music/${encodeURIComponent(nextBgm.title)}.wav`,
         nextBgm.id
@@ -116,34 +125,48 @@ function Bgms() {
       </Container>
 
       {currentPlaying && (
-        <Box
-          position="fixed"
-          bottom="20px"
-          left="20px"
-          zIndex={1000}
-          display="flex"
-          gap={2}
-          alignItems="center"
-          bg="white"
-          _dark={{ bg: "gray.700" }}
-          p={2}
-          borderRadius="md"
-          boxShadow="md"
-        >
-          <IconButton
-            aria-label="Mute toggle"
-            size="xs"
-            variant="ghost"
-            onClick={() => {
-              setIsMuted(!isMuted);
-              if (audioRef.current) {
-                audioRef.current.muted = !isMuted;
-              }
+        <>
+          <span
+            style={{
+              position: "fixed",
+              left: "20px",
+              bottom: "80px", // BOXより少し上
+              zIndex: 1001,
+              fontWeight: "bold",
+              fontSize: "1rem",
             }}
           >
-            <Box as="span">{isMuted ? <FaVolumeMute /> : <FaVolumeUp />}</Box>
-          </IconButton>
-        </Box>
+            {bgms.find((bgm) => bgm.id === currentPlaying)?.title}
+          </span>
+          <Box
+            position="fixed"
+            bottom="20px"
+            left="20px"
+            zIndex={1000}
+            display="flex"
+            gap={2}
+            alignItems="center"
+            bg="white"
+            _dark={{ bg: "gray.700" }}
+            p={2}
+            borderRadius="md"
+            boxShadow="md"
+          >
+            <IconButton
+              aria-label="Mute toggle"
+              size="xs"
+              variant="ghost"
+              onClick={() => {
+                setIsMuted(!isMuted);
+                if (globalAudioRef) {
+                  globalAudioRef.muted = !isMuted;
+                }
+              }}
+            >
+              <Box as="span">{isMuted ? <FaVolumeMute /> : <FaVolumeUp />}</Box>
+            </IconButton>
+          </Box>
+        </>
       )}
     </>
   );
