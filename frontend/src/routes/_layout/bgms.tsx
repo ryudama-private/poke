@@ -1,8 +1,14 @@
 import { Container, Heading, IconButton, Box } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, useRef } from "react";
-import { FaPlay, FaStop, FaVolumeUp, FaVolumeMute } from "react-icons/fa";
-
+import {
+  FaPlay,
+  FaStop,
+  FaVolumeUp,
+  FaVolumeMute,
+  FaStepBackward,
+  FaStepForward,
+} from "react-icons/fa";
 // @ts-ignore
 export const Route = createFileRoute("/_layout/bgms")({
   component: Bgms,
@@ -47,12 +53,46 @@ function Bgms() {
     }
   };
 
+  // 前の曲へ
+  const handlePrev = () => {
+    if (!currentPlaying || bgms.length === 0) return;
+    const currentIndex = bgms.findIndex((bgm) => bgm.id === currentPlaying);
+    const prevIndex = (currentIndex - 1 + bgms.length) % bgms.length;
+    const prevBgm = bgms[prevIndex];
+    playAudio(
+      `/data/BGM/PokemonRG_Music/${encodeURIComponent(prevBgm.title)}.wav`,
+      prevBgm.id
+    );
+  };
+
+  // 停止
+  const handleStop = () => {
+    if (globalAudioRef) {
+      globalAudioRef.pause();
+      globalAudioRef = null;
+    }
+    globalCurrentPlaying = null;
+    setCurrentPlaying(null);
+  };
+
+  // 次の曲へ
+  const handleNext = () => {
+    if (!currentPlaying || bgms.length === 0) return;
+    const currentIndex = bgms.findIndex((bgm) => bgm.id === currentPlaying);
+    const nextIndex = (currentIndex + 1) % bgms.length;
+    const nextBgm = bgms[nextIndex];
+    playAudio(
+      `/data/BGM/PokemonRG_Music/${encodeURIComponent(nextBgm.title)}.wav`,
+      nextBgm.id
+    );
+  };
+
   const playAudio = (filePath: string, id: string) => {
     // 同じ曲なら停止
     if (currentPlaying === id) {
       globalAudioRef?.pause();
       globalAudioRef = null;
-      globalCurrentPlaying = null; // グローバルも更新
+      globalCurrentPlaying = null;
       setCurrentPlaying(null);
       return;
     }
@@ -64,7 +104,7 @@ function Bgms() {
     const audio = new Audio(filePath);
     audio.play();
     globalAudioRef = audio;
-    globalCurrentPlaying = id; // グローバルも更新
+    globalCurrentPlaying = id;
     setCurrentPlaying(id);
 
     audio.onloadedmetadata = () => {
@@ -78,8 +118,8 @@ function Bgms() {
       const currentIndex = bgms.findIndex((bgm) => bgm.id === id);
       const nextIndex = (currentIndex + 1) % bgms.length;
       const nextBgm = bgms[nextIndex];
-      globalCurrentPlaying = nextBgm.id; // グローバルも更新
-      setCurrentPlaying(nextBgm.id); // UIも更新
+      globalCurrentPlaying = nextBgm.id;
+      setCurrentPlaying(nextBgm.id);
       playAudio(
         `/data/BGM/PokemonRG_Music/${encodeURIComponent(nextBgm.title)}.wav`,
         nextBgm.id
@@ -146,7 +186,7 @@ function Bgms() {
             style={{
               position: "fixed",
               left: "20px",
-              bottom: "120px", // BOXより少し上
+              bottom: "120px",
               zIndex: 1001,
               fontWeight: "bold",
               fontSize: "1rem",
@@ -159,7 +199,7 @@ function Bgms() {
             style={{
               position: "fixed",
               left: "20px",
-              bottom: "80px", // BOXより少し上
+              bottom: "80px",
               zIndex: 1001,
               fontWeight: "bold",
               fontSize: "1rem",
@@ -220,6 +260,39 @@ function Bgms() {
                 style={{ width: "80px" }}
               />
             )}
+            {/* 前の曲 */}
+            <IconButton
+              aria-label="Previous"
+              size="xs"
+              variant="ghost"
+              onClick={handlePrev}
+            >
+              <Box as="span">
+                <FaStepBackward />
+              </Box>
+            </IconButton>
+            {/* 停止 */}
+            <IconButton
+              aria-label="Stop"
+              size="xs"
+              variant="ghost"
+              onClick={handleStop}
+            >
+              <Box as="span">
+                <FaStop />
+              </Box>
+            </IconButton>
+            {/* 次の曲 */}
+            <IconButton
+              aria-label="Next"
+              size="xs"
+              variant="ghost"
+              onClick={handleNext}
+            >
+              <Box as="span">
+                <FaStepForward />
+              </Box>
+            </IconButton>
           </Box>
         </>
       )}
