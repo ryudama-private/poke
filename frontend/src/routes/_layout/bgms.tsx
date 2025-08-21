@@ -21,9 +21,10 @@ interface Bgm {
 function Bgms() {
   const [bgms, setBgms] = useState<Bgm[]>([]);
   const [currentPlaying, setCurrentPlaying] = useState<string | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [volume, setVolume] = useState(1);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
+  const [volume, setVolume] = useState(1);
 
   useEffect(() => {
     fetch("http://localhost:8000/api/v1/bgms")
@@ -37,6 +38,14 @@ function Bgms() {
   useEffect(() => {
     setCurrentPlaying(globalCurrentPlaying);
   }, []);
+
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    if (globalAudioRef) {
+      globalAudioRef.currentTime = value;
+      setCurrentTime(value);
+    }
+  };
 
   const playAudio = (filePath: string, id: string) => {
     // 同じ曲なら停止
@@ -57,6 +66,13 @@ function Bgms() {
     globalAudioRef = audio;
     globalCurrentPlaying = id; // グローバルも更新
     setCurrentPlaying(id);
+
+    audio.onloadedmetadata = () => {
+      setDuration(audio.duration);
+    };
+    audio.ontimeupdate = () => {
+      setCurrentTime(audio.currentTime);
+    };
 
     audio.onended = () => {
       const currentIndex = bgms.findIndex((bgm) => bgm.id === id);
@@ -130,7 +146,7 @@ function Bgms() {
             style={{
               position: "fixed",
               left: "20px",
-              bottom: "80px", // BOXより少し上
+              bottom: "120px", // BOXより少し上
               zIndex: 1001,
               fontWeight: "bold",
               fontSize: "1rem",
@@ -138,6 +154,28 @@ function Bgms() {
           >
             {bgms.find((bgm) => bgm.id === currentPlaying)?.title}
           </span>
+
+          <span
+            style={{
+              position: "fixed",
+              left: "20px",
+              bottom: "80px", // BOXより少し上
+              zIndex: 1001,
+              fontWeight: "bold",
+              fontSize: "1rem",
+            }}
+          >
+            <input
+              type="range"
+              min={0}
+              max={duration || 0}
+              value={currentTime}
+              step="0.1"
+              onChange={handleSeek}
+              style={{ width: "160px" }}
+            />
+          </span>
+
           <Box
             position="fixed"
             bottom="20px"
@@ -165,6 +203,23 @@ function Bgms() {
             >
               <Box as="span">{isMuted ? <FaVolumeMute /> : <FaVolumeUp />}</Box>
             </IconButton>
+            {!isMuted && (
+              <input
+                type="range"
+                min={0}
+                max={1}
+                step={0.01}
+                value={volume}
+                onChange={(e) => {
+                  const v = Number(e.target.value);
+                  setVolume(v);
+                  if (globalAudioRef) {
+                    globalAudioRef.volume = v;
+                  }
+                }}
+                style={{ width: "80px" }}
+              />
+            )}
           </Box>
         </>
       )}
