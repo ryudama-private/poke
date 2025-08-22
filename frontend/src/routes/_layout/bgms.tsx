@@ -14,7 +14,9 @@ export const Route = createFileRoute("/_layout/bgms")({
   component: Bgms,
 });
 
+//　音声データそのもの
 let globalAudioRef: HTMLAudioElement | null = null;
+//　再生中の曲のID
 let globalCurrentPlaying: string | null = null;
 
 interface Bgm {
@@ -40,11 +42,12 @@ function Bgms() {
       });
   }, []);
 
+  // サイドバー関連
   // ページ表示時にグローバル値で状態を復元
   useEffect(() => {
     setCurrentPlaying(globalCurrentPlaying);
   }, []);
-
+  //再生位置を変更するバーの操作
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
     if (globalAudioRef) {
@@ -52,7 +55,6 @@ function Bgms() {
       setCurrentTime(value);
     }
   };
-
   // 前の曲へ
   const handlePrev = () => {
     if (!currentPlaying || bgms.length === 0) return;
@@ -64,7 +66,6 @@ function Bgms() {
       prevBgm.id
     );
   };
-
   // 停止
   const handleStop = () => {
     if (globalAudioRef) {
@@ -74,7 +75,6 @@ function Bgms() {
     globalCurrentPlaying = null;
     setCurrentPlaying(null);
   };
-
   // 次の曲へ
   const handleNext = () => {
     if (!currentPlaying || bgms.length === 0) return;
@@ -87,6 +87,7 @@ function Bgms() {
     );
   };
 
+  // 再生処理
   const playAudio = (filePath: string, id: string) => {
     // 同じ曲なら停止
     if (currentPlaying === id) {
@@ -107,13 +108,17 @@ function Bgms() {
     globalCurrentPlaying = id;
     setCurrentPlaying(id);
 
+    //　音声データの総再生時間等の読み取り
     audio.onloadedmetadata = () => {
       setDuration(audio.duration);
     };
+
+    // 再生位置を変更するバーの操作
     audio.ontimeupdate = () => {
       setCurrentTime(audio.currentTime);
     };
 
+    // 再生終了時の処理
     audio.onended = () => {
       const currentIndex = bgms.findIndex((bgm) => bgm.id === id);
       const nextIndex = (currentIndex + 1) % bgms.length;
