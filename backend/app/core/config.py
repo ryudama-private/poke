@@ -38,6 +38,8 @@ class Settings(BaseSettings):
     FRONTEND_HOST: str = "http://localhost:5173"
     ENVIRONMENT: Literal["local", "staging", "production"] = "local"
     OPENAI_API_KEY: str | None = None
+    AZURE_SEARCH_ENDPOINT: AnyUrl | None = None
+    AZURE_SEARCH_ADMIN_KEY: str | None = None
 
     BACKEND_CORS_ORIGINS: Annotated[
         list[AnyUrl] | str, BeforeValidator(parse_cors)
